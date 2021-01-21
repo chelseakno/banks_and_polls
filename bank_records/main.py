@@ -14,75 +14,66 @@ monthChange = []
 
 prevRowRevenue=0
 prevRowDate=""
-#need a dictionary and variable to keep track of greatest increase date and revenue
-greatest_inc={}
-greatI=0
 
-#need a dictionary and variable to keep track of greatest decrease date and revenue
-greatest_dec={}
-greatD=0
-#setting a variable to insure that the first row of information is stored into initial variables
+increaseDate={}
+revenueIncrease=0
+
+decreaseDate={}
+revenueDecrease=0
+
 count1 = 1
-#print(count1)
 
 with open(csvpath,newline='') as csvfile:
 	csvreader = csv.reader(csvfile, delimiter=',')
-#skipping the first row of headers in csv file
+
 	next(csvreader, None)
-	#for comparison, setting first row of data as initialization
 	for row in csvreader:
 		months = 1
-		#print(row[1])
 		totalRevenue = totalRevenue + int(row[1])
 
 		if count1 == 1:
-			prev_row_rev=int(row[1])
-			greatest_inc[row[0]]=int(row[1])
-			greatest_dec[row[0]]=int(row[1])
+			prevRowRev=int(row[1])
+			increaseDate[row[0]]=int(row[1])
+			decreaseDate[row[0]]=int(row[1])
 			count1+=1
-			#print(count1)
-		elif int(row[1])>prev_row_rev:
-			if (int(row[1])> 0 and prev_row_rev>0) or (int(row[1])<0 and prev_row_rev<0):
-				compI=abs(abs(int(row[1]))- abs(prev_row_rev))
+		elif int(row[1])>prevRowRev:
+			if (int(row[1])> 0 and prevRowRev>0) or (int(row[1])<0 and prevRowRev<0):
+				compI=abs(abs(int(row[1]))- abs(prevRowRev))
 				monthChange.append(compI)
 			else:
-				compI=abs(abs(int(row[1]))+abs(prev_row_rev))
+				compI=abs(abs(int(row[1]))+abs(prevRowRev))
 				monthChange.append(compI)
-			if compI>greatI:
-				greatI=compI
-				greatest_inc={}
-				greatest_inc[row[0]]=(row[1])
+			if compI>revenueIncrease:
+				revenueIncrease=compI
+				increaseDate={}
+				increaseDate[row[0]]=(row[1])
 
 		else:
-			if (int(row[1])> 0 and prev_row_rev>0) or (int(row[1])<0 and prev_row_rev<0):
-				compD=abs(abs(int(row[1]))- abs(prev_row_rev))
+			if (int(row[1])> 0 and prevRowRev>0) or (int(row[1])<0 and prevRowRev<0):
+				compD=abs(abs(int(row[1]))- abs(prevRowRev))
 				monthChange.append(compD)
 			else:
-				compD=abs(abs(int(row[1]))+abs(prev_row_rev))
+				compD=abs(abs(int(row[1]))+abs(prevRowRev))
 				monthChange.append(compD)
-			if compD>greatD:
-				greatD=compD
-				greatest_dec={}
-				greatest_dec[row[0]]=row[1]
+			if compD>revenueDecrease:
+				revenueDecrease=compD
+				decreaseDate={}
+				decreaseDate[row[0]]=row[1]
 
-#print(change)
-
-#Average change we should now be able to take the change list, sum all values and divide by length
-#	to obtain the average change between the months
 sum1=0
 for i in (monthChange):
 	sum1+=float(i)
-avg_change = sum1/(len(monthChange))
+averageChange = sum1/(len(monthChange))
 
-gt_month=""
-dc_month=""
-for u in greatest_inc:
-	gt_month = u
-	gt_dollar=greatest_inc[u]
+gtMonth=""
+dcMonth=""
+for u in increaseDate:
+	gtMonth = u
+	gtDollar=increaseDate[u]
 
-for z in greatest_dec:
-	dc_month = z
-	dc_dollar=greatest_dec[z]
+for z in decreaseDate:
+	dcMonth = z
+	dcDollar=decreaseDate[z]
 
 
 print("Financial Analysis")
@@ -90,9 +81,9 @@ print("----------------------------")
 print("Total Months: "+ str(months))
 print("Total Revenue: $"+ str(totalRevenue))
 
-print("Average Revenue Change: $" + str(avg_change))
-print("Greatest Increase in Revenue: "+ str(gt_month)+" ($"+str(gt_dollar)+")")
-print("Greatest Decrease in Revenue: "+ str(dc_month)+" ($"+str(dc_dollar)+")")
+print("Average Revenue Change: $" + str(averageChange))
+print("Greatest Increase in Revenue: "+ str(gtMonth)+" ($"+str(gtDollar)+")")
+print("Greatest Decrease in Revenue: "+ str(dcMonth)+" ($"+str(dcDollar)+")")
 print("---------------------------")
 
 
@@ -101,7 +92,7 @@ with open("pybank_analysis.txt","w") as text_file:
 	text_file.write("----------------------------\n")
 	text_file.write("Total Months: "+ str(months)+"\n")
 	text_file.write("Total Revenue: $"+ str(totalRevenue)+"\n")
-	text_file.write("Average Revenue Change: $" + str(avg_change)+"\n")
-	text_file.write("Greatest Increase in Revenue: "+ str(gt_month)+" ($"+str(gt_dollar)+")\n")
-	text_file.write("Greatest Decrease in Revenue: "+ str(dc_month)+" ($"+str(dc_dollar)+")\n")
+	text_file.write("Average Revenue Change: $" + str(averageChange)+"\n")
+	text_file.write("Greatest Increase in Revenue: "+ str(gtMonth)+" ($"+str(gtDollar)+")\n")
+	text_file.write("Greatest Decrease in Revenue: "+ str(dcMonth)+" ($"+str(dcDollar)+")\n")
 	text_file.write("---------------------------")
